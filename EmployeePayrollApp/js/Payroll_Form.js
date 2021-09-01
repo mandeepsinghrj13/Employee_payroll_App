@@ -1,22 +1,13 @@
-// UC-8
-const salary = document.querySelector("#salary");
-const output = document.querySelector(".salary-output");
-output.textContent = salary.value;
-salary.addEventListener("input", function () {
-  output.textContent = salary.value;
-});
-
-// UC-10
 window.addEventListener("DOMContentLoaded", (event) => {
-  const name = document.querySelector("#name");
+  const text = document.querySelector("#name");
   const textError = document.querySelector(".text-error");
-  name.addEventListener("input", function () {
-    if (name.value.length == 0) {
+  text.addEventListener("input", function () {
+    if (text.value.length == 0) {
       textError.textContent = "";
       return;
     }
     try {
-      new EmployeePayrollData().name = name.value;
+      new EmployeePayrollData().name = text.value;
       textError.textContent = "";
     } catch (e) {
       textError.textContent = e;
@@ -31,24 +22,21 @@ window.addEventListener("DOMContentLoaded", (event) => {
   });
 });
 
-// UC-11
-
-//save function called on submit
 const save = () => {
   try {
     let employeePayrollData = createEmployeePayroll();
-    createAndUpdateStorage(employeePayrollData);
+    createAndUpdateStrorage(employeePayrollData);
   } catch (e) {
+    console.log(e);
     return;
   }
 };
 
-// UC-12
-//Saving Employee Payroll to Local Storage
-function createAndUpdateStorage(employeePayrollData) {
+function createAndUpdateStrorage(employeePayrollData) {
   let employeePayrollList = JSON.parse(
     localStorage.getItem("EmployeePayrollList")
   );
+
   if (employeePayrollList != undefined) {
     employeePayrollList.push(employeePayrollData);
   } else {
@@ -61,31 +49,30 @@ function createAndUpdateStorage(employeePayrollData) {
   );
 }
 
-//function to populate employee object with html form data
 const createEmployeePayroll = () => {
   let employeePayrollData = new EmployeePayrollData();
   try {
-    employeePayrollData.name = getInputValuesById("#name");
+    employeePayrollData.name = getInputValueById("#name");
   } catch (e) {
-    setTextValue(".test-error", e);
+    setTextValue(".text-error", e);
     throw e;
   }
   employeePayrollData.profilePic = getSelectedValues("[name=profile]").pop();
   employeePayrollData.gender = getSelectedValues("[name=gender]").pop();
   employeePayrollData.department = getSelectedValues("[name=department]");
-  employeePayrollData.salary = getInputValuesById("#salary");
-  employeePayrollData.note = getInputValuesById("#notes");
+  employeePayrollData.salary = getInputValueById("#salary");
+  employeePayrollData.note = getInputValueById("#notes");
   let date =
-    getInputValuesById("#day") +
+    getInputValueById("#day") +
     " " +
-    getInputValuesById("#month") +
+    getInputValueById("#month") +
     " " +
-    getInputValuesById("#year");
-  employeePayrollData.date = Date.parse(date);
-  alert("employeePayrollData.toString()");
+    getInputValueById("#year");
+  employeePayrollData.startDate = Date.parse(date);
+  alert(employeePayrollData.toString());
   return employeePayrollData;
 };
-//function to get html form values of radio buttons
+
 const getSelectedValues = (propertyValue) => {
   let allItems = document.querySelectorAll(propertyValue);
   let selItems = [];
@@ -94,44 +81,28 @@ const getSelectedValues = (propertyValue) => {
   });
   return selItems;
 };
-//function to get form values by Id
-const getInputValuesById = (id) => {
+
+/*
+ *	1: querySelector is the newer feature.
+ *	2: The querySelector method can be used when selecting by element name,
+ *		nestingm, or class name.
+ *	3: querySelector lets you find elements with rules that can't be
+ *		expressed with getElementById.
+ */
+
+const getInputValueById = (id) => {
   let value = document.querySelector(id).value;
   return value;
 };
-//function to get form values
+
+/*
+ * 1: getElementById is better supported than querySelector in older versions
+ *	of the browsers.
+ * 2: The things with getElementById is that it only allows to select an
+ *	element by its id.
+ */
+
 const getInputElementValue = (id) => {
   let value = document.getElementById(id).value;
   return value;
-};
-
-// UC-13
-//Reset the Employee Payroll Form
-const resetForm = () => {
-  setValue("#name", "");
-  unsetSelectedValues("[name=profile]");
-  unsetSelectedValues("[name=gender]");
-  unsetSelectedValues("[name=department]");
-  setValue("#salary", "");
-  setValue("#notes", "");
-  setValue("#day", "");
-  setValue("#month", "January");
-  setValue("#year", "2020");
-};
-
-const unsetSelectedValues = (propertyValue) => {
-  let allItems = document.querySelectorAll(propertyValue);
-  allItems.forEach((item) => {
-    item.checked = false;
-  });
-};
-
-const setTextValue = (id, value) => {
-  const element = document.querySelector(id);
-  element.textContent = value;
-};
-
-const setValue = (id, value) => {
-  const element = document.querySelector(id);
-  element.value = value;
 };
