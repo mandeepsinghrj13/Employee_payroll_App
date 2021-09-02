@@ -10,7 +10,7 @@ class EmployeePayrollData {
     return this._name;
   }
   set name(name) {
-    let nameRegex = RegExp("^[A-Z]{1}[a-z]{2,}$");
+    let nameRegex = RegExp("^[A-Z]{1}[A-Za-z]{2,}$");
     if (nameRegex.test(name)) {
       this._name = name;
     } else {
@@ -57,7 +57,15 @@ class EmployeePayrollData {
     return this._startDate;
   }
   set startDate(startDate) {
-    this._startDate = new Date(startDate);
+    // this._startDate = new Date(startDate);
+    if (
+      new Date(startDate) <= new Date() &&
+      new Date() - new Date(startDate) >= 30
+    ) {
+      this._startDate = new Date(startDate);
+    } else {
+      throw "date  is incorrect";
+    }
   }
 
   toString() {
